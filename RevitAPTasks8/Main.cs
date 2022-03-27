@@ -28,7 +28,6 @@ namespace RevitAPTasks8
 
                 var ifcOption = new IFCExportOptions();
 
-                // укзываем место для сохранения (здесь - рабочий стол)
                 doc.Export(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "export.ifc", ifcOption);
 
                 ts.Commit();
