@@ -3,6 +3,8 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,29 +12,40 @@ using System.Threading.Tasks;
 namespace RevitAPTasks8
 {
     [Transaction(TransactionMode.Manual)]
-    public class Main : IExternalCommand // IExternalCommand явл-ся интерфейсом
+    public class Main : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            using (var ts = new Transaction(doc, "Export NWC"))
+            using (var ts = new Transaction(doc, "Export Image"))
             {
                 ts.Start();
 
                 ViewPlan viewPlan = new FilteredElementCollector(doc)
                     .OfClass(typeof(ViewPlan))
                     .Cast<ViewPlan>()
-                    .FirstOrDefault(v => v.ViewType == ViewType.FloorPlan &&
-                                         v.Name.Equals("Level 1"));
+                    .FirstOrDefault(v => v.ViewType == ViewType.FloorPlan);
 
-                var nwcOption = new NavisworksExportOptions();
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string filepath = Path.Combine(desktopPath, viewPlan.Name);
 
-                doc.Export(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "export.nwc", nwcOption);
+                ImageExportOptions imageExportOptions = new ImageExportOptions
+                {
+                    ZoomType = ZoomFitType.FitToPage,
+                    PixelSize = 1024,
+                    ImageResolution = ImageResolution.DPI_600,
+                    FitDirection = FitDirectionType.Horizontal,
+                    ExportRange = ExportRange.CurrentView,
+                    HLRandWFViewsFileType = ImageFileType.PNG,
+                    FilePath = filepath,
+                    ShadowViewsFileType = ImageFileType.PNG
+                };
 
+                doc.ExportImage(imageExportOptions);
                 ts.Commit();
             }
-            TaskDialog.Show("Сообщение", $"Экспорт в формат NWC  выполнен.{ Environment.NewLine}Файл на сохранён на рабочем столе");
+            TaskDialog.Show("Сообщение", $"Экспорт в формат Image выполнен.{Environment.NewLine}Файл сохранён на рабочем столе");
             return Result.Succeeded;
         }
         public void BatchPrint(Document doc)
