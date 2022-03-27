@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Assembly>"C:\Program Files\RevitAPITrainig\RevitAPTasks8.dll"</Assembly>
+		<AddInId>E12CCBE2-A3D4-4E38-9AA0-3E07D35F2A4B</AddInId> 
+		<FullClassName>RevitAPTasks8.Main</FullClassName>
+		<VendorId>ADSK</VendorId> 
+		<Text>Экспорт модели в разные форматы</Text> 
+	</AddIn>
+</RevitAddIns>
