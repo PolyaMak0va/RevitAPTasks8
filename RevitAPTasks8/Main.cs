@@ -16,7 +16,7 @@ namespace RevitAPTasks8
         {
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            using (var ts = new Transaction(doc, "Export IFC"))
+            using (var ts = new Transaction(doc, "Export NWC"))
             {
                 ts.Start();
 
@@ -26,13 +26,13 @@ namespace RevitAPTasks8
                     .FirstOrDefault(v => v.ViewType == ViewType.FloorPlan &&
                                          v.Name.Equals("Level 1"));
 
-                var ifcOption = new IFCExportOptions();
+                var nwcOption = new NavisworksExportOptions();
 
-                doc.Export(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "export.ifc", ifcOption);
+                doc.Export(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "export.nwc", nwcOption);
 
                 ts.Commit();
             }
-            TaskDialog.Show("Сообщение", $"Экспорт в формат IFC выполнен.{ Environment.NewLine}Файл на сохранён на рабочем столе");
+            TaskDialog.Show("Сообщение", $"Экспорт в формат NWC  выполнен.{ Environment.NewLine}Файл на сохранён на рабочем столе");
             return Result.Succeeded;
         }
         public void BatchPrint(Document doc)
